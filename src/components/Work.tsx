@@ -20,7 +20,7 @@ const projects = [
     title: "Data Warehouse Prototype",
     category: "Data Engineering",
     tools: "SQL Server, Medallion Arch.",
-    image: "/images/radix.png",
+    image: "/images/data_architecture.png",
   },
   {
     title: "MLOps Pipeline",
@@ -32,7 +32,7 @@ const projects = [
     title: "Sales Analytics Dash.",
     category: "Data Analysis",
     tools: "Power BI, PostgreSQL",
-    image: "/images/Maxlife.png",
+    image: "/images/zepto.png",
   },
 ];
 
