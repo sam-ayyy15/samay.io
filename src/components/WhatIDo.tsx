@@ -8,20 +8,17 @@ const WhatIDo = () => {
     containerRef.current[index] = el;
   };
   useEffect(() => {
-    if (ScrollTrigger.isTouch) {
-      containerRef.current.forEach((container) => {
-        if (container) {
-          container.classList.remove("what-noTouch");
-          container.addEventListener("click", () => handleClick(container));
-        }
-      });
-    }
+    if (!ScrollTrigger.isTouch) return;
+    // Keep references to the exact handlers so cleanup actually removes them.
+    const handlers = containerRef.current.map((container) => {
+      if (!container) return null;
+      const onClick = () => handleClick(container);
+      container.classList.remove("what-noTouch");
+      container.addEventListener("click", onClick);
+      return { container, onClick };
+    });
     return () => {
-      containerRef.current.forEach((container) => {
-        if (container) {
-          container.removeEventListener("click", () => handleClick(container));
-        }
-      });
+      handlers.forEach((h) => h?.container.removeEventListener("click", h.onClick));
     };
   }, []);
   return (
@@ -43,7 +40,7 @@ const WhatIDo = () => {
                 y1="0"
                 x2="0"
                 y2="100%"
-                stroke="white"
+                stroke="currentColor"
                 strokeWidth="2"
                 strokeDasharray="7,7"
               />
@@ -52,7 +49,7 @@ const WhatIDo = () => {
                 y1="0"
                 x2="100%"
                 y2="100%"
-                stroke="white"
+                stroke="currentColor"
                 strokeWidth="2"
                 strokeDasharray="7,7"
               />
@@ -69,7 +66,7 @@ const WhatIDo = () => {
                   y1="0"
                   x2="100%"
                   y2="0"
-                  stroke="white"
+                  stroke="currentColor"
                   strokeWidth="2"
                   strokeDasharray="6,6"
                 />
@@ -78,7 +75,7 @@ const WhatIDo = () => {
                   y1="100%"
                   x2="100%"
                   y2="100%"
-                  stroke="white"
+                  stroke="currentColor"
                   strokeWidth="2"
                   strokeDasharray="6,6"
                 />
@@ -90,17 +87,19 @@ const WhatIDo = () => {
               <h3>DATA ENGINEER</h3>
               <h4>Develop Scalable Data Pipelines</h4>
               <p>
-                Designing robust ETL pipelines and data warehouses. From ingestion to transformation, I build data architectures that scale.
+                Batch and real-time pipelines on a Medallion lakehouse — ingestion,
+                Silver-layer cleansing, Gold KPIs — orchestrated, tested and built to scale.
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">SQL Server</div>
-                <div className="what-tags">PostgreSQL</div>
-                <div className="what-tags">ETL Pipelines</div>
-                <div className="what-tags">Data Modeling</div>
-                <div className="what-tags">AWS</div>
+                <div className="what-tags">Databricks</div>
+                <div className="what-tags">PySpark</div>
+                <div className="what-tags">Airflow</div>
+                <div className="what-tags">Kafka / Redpanda</div>
+                <div className="what-tags">dbt</div>
+                <div className="what-tags">Delta Lake</div>
+                <div className="what-tags">AWS S3 / EC2</div>
                 <div className="what-tags">Docker</div>
-                <div className="what-tags">Data Warehouse</div>
               </div>
               <div className="what-arrow"></div>
             </div>
@@ -116,7 +115,7 @@ const WhatIDo = () => {
                   y1="100%"
                   x2="100%"
                   y2="100%"
-                  stroke="white"
+                  stroke="currentColor"
                   strokeWidth="2"
                   strokeDasharray="6,6"
                 />
@@ -125,18 +124,20 @@ const WhatIDo = () => {
             <div className="what-corner"></div>
             <div className="what-content-in">
               <h3>DATA ANALYSIS</h3>
-              <h4>Machine Learning & Analytics</h4>
+              <h4>BI, Modeling & Machine Learning</h4>
               <p>
-                Developing end-to-end ML models and actionable dashboards. From EDA to production-grade predictive models.
+                Star-schema warehouses, KPI dashboards and ML models — turning
+                millions of rows into decisions stakeholders trust.
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">Python</div>
+                <div className="what-tags">SQL</div>
                 <div className="what-tags">Power BI</div>
-                <div className="what-tags">Scikit-Learn</div>
+                <div className="what-tags">DAX</div>
+                <div className="what-tags">Dimensional Modeling</div>
+                <div className="what-tags">Pandas</div>
+                <div className="what-tags">scikit-learn</div>
                 <div className="what-tags">NLP</div>
-                <div className="what-tags">Algorithms</div>
-                <div className="what-tags">EDA</div>
               </div>
               <div className="what-arrow"></div>
             </div>

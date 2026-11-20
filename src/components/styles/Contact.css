@@ -9,8 +9,10 @@
 
 .contact-section h3 {
   font-size: 60px;
-  font-weight: 400;
+  font-weight: 800;
+  letter-spacing: -1px;
   text-transform: uppercase;
+  color: var(--accentColor);
   margin: 0;
 }
 
@@ -20,9 +22,12 @@
 }
 
 .contact-flex h4 {
-  font-weight: 500;
+  font-weight: 600;
   margin: 0;
-  opacity: 0.6;
+  color: var(--mutedColor);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 13px;
 }
 
 .contact-box {
@@ -36,12 +41,19 @@
 }
 
 a.contact-social {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
   font-size: 25px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--lineColor);
+  transition: border-color 0.3s, color 0.3s;
+}
+
+a.contact-social:hover {
+  border-color: var(--accentColor);
 }
 
 .contact-box h2 {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 23px;
   margin: 0;
 }
@@ -112,5 +124,124 @@ a.contact-social {
 
   .contact-container {
     width: calc(100% - 25px);
+  }
+}
+/* ── CTA ── */
+.contact-cta {
+  padding: 40px 0 70px;
+  margin-bottom: 60px;
+  border-bottom: 1px solid var(--lineColor);
+}
+
+.contact-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 40px;
+  background: var(--blushColor);
+  color: var(--accentDeep);
+}
+
+.contact-status i {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accentColor);
+}
+
+/* pulsing ring — transform + opacity only */
+.contact-status i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accentColor);
+  animation: statusPulse 1.8s var(--easeOut) infinite;
+}
+
+@keyframes statusPulse {
+  from {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.contact-section .contact-cta h3 {
+  font-size: clamp(48px, 8vw, 140px);
+  line-height: 0.92;
+  letter-spacing: -3px;
+  text-transform: none;
+  color: var(--textColor);
+  margin: 28px 0 34px;
+}
+
+.contact-cta h3 span {
+  color: var(--accentColor);
+}
+
+.contact-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: clamp(15px, 2.2vw, 30px);
+  padding: 16px 28px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  border-radius: 60px;
+  background: var(--accentColor);
+  color: #fff;
+  transition: transform 0.35s var(--easeOut), background-color 0.3s,
+    box-shadow 0.35s var(--easeOut);
+  box-shadow: 0 20px 40px -20px rgba(210, 4, 45, 0.7);
+}
+
+.contact-mail:hover {
+  color: #fff;
+  background: var(--accentDeep);
+  transform: translateY(-3px);
+}
+
+.contact-mail svg {
+  transition: transform 0.35s var(--easeOut);
+}
+
+.contact-mail:hover svg {
+  transform: rotate(45deg);
+}
+
+.contact-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-location svg {
+  color: var(--accentColor);
+}
+
+@media only screen and (max-width: 900px) {
+  .contact-cta {
+    padding: 20px 0 50px;
+    margin-bottom: 30px;
+  }
+
+  .contact-section .contact-cta h3 {
+    letter-spacing: -1.5px;
+  }
+
+  .contact-mail {
+    padding: 14px 20px;
   }
 }

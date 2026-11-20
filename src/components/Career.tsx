@@ -1,8 +1,35 @@
 import "./styles/Career.css";
 
+const timeline = [
+  {
+    role: "Higher Secondary (HSC), Science",
+    place: "Vidyalankar Group of Educational Institutes, Mumbai",
+    year: "2020",
+    text: "Completed HSC in the Science stream with 82.17%.",
+  },
+  {
+    role: "B.E. Computer Science & Engineering",
+    place: "Alva's Institute of Engineering & Technology, Mangalore",
+    year: "2022",
+    text: "Graduating 2026 with a CGPA of 9.23 / 10. Two research papers published on IEEE Xplore (ICoICI-2025, CICN-2024) and a Top-5 finish at the HackToFuture 3.0 national hackathon.",
+  },
+  {
+    role: "Google Data Analytics Professional Certificate",
+    place: "Google · Coursera",
+    year: "2024",
+    text: "8-course program covering data cleaning, SQL, R, Tableau and visualization, with hands-on dashboards and case studies.",
+  },
+  {
+    role: "Data Engineer Intern",
+    place: "Glowlogics Solutions Pvt Ltd, Bengaluru",
+    year: "2026",
+    text: "Built a production Medallion pipeline on Databricks unifying 6+ ERP/CRM sources (500K+ records/day, 99.1% reliability, 85% fewer reporting inconsistencies). Automated Silver-layer cleansing and upserts, saving 8+ engineering hours a week, and modeled a 2M+ row star schema that cut query time ~45%.",
+  },
+];
+
 const Career = () => {
   return (
-    <div className="career-section section-container">
+    <div className="career-section section-container" id="experience">
       <div className="career-container">
         <h2>
           My career <span>&</span>
@@ -12,45 +39,18 @@ const Career = () => {
           <div className="career-timeline">
             <div className="career-dot"></div>
           </div>
-          <div className="career-info-box">
-            <div className="career-info-in">
-              <div className="career-role">
-                <h4>B.Tech in CSE</h4>
-                <h5>Alvas Institute of Engineering and Technology</h5>
+          {timeline.map((item) => (
+            <div className="career-info-box" key={item.role}>
+              <div className="career-info-in">
+                <div className="career-role">
+                  <h4>{item.role}</h4>
+                  <h5>{item.place}</h5>
+                </div>
+                <h3>{item.year}</h3>
               </div>
-              <h3>2022</h3>
+              <p>{item.text}</p>
             </div>
-            <p>
-              Pursuing Bachelor of Technology in Computer Science & Engineering. Solid academic foundation with a CGPA of 9.32 / 10.0.
-            </p>
-          </div>
-          <div className="career-info-box">
-            <div className="career-info-in">
-              <div className="career-role">
-                <h4>Google Data Analytics Professional Certificate</h4>
-                <h5>Coursera | Google Career Certificates</h5>
-              </div>
-              <h3> 2023</h3>
-            </div>
-            <p>
-              Completed an 8-course certification covering data analytics fundamentals,
-              data cleaning, analysis, and visualization using spreadsheets, SQL, R, and
-              Tableau. Built dashboards and case studies while learning data ethics,
-              metadata management, and real-world data problem solving.
-            </p>
-          </div>
-          <div className="career-info-box">
-            <div className="career-info-in">
-              <div className="career-role">
-                <h4>Data Science Intern</h4>
-                <h5>Glowlogics Solutions</h5>
-              </div>
-              <h3>NOW</h3>
-            </div>
-            <p>
-              Building and deploying ML pipelines, designing data warehouse prototypes, and developing ETL pipelines for analytics workflows.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </div>

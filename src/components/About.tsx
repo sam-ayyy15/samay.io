@@ -1,14 +1,47 @@
 import "./styles/About.css";
 
+// Scannable highlights: recruiters skim, so the numbers get their own callouts
+// instead of being buried in a paragraph.
+const stats = [
+  { value: "500K+", label: "records processed a day" },
+  { value: "99%+", label: "pipeline reliability" },
+  { value: "<2s", label: "streaming latency" },
+  { value: "2", label: "IEEE publications" },
+];
+
+const stack = ["Databricks", "PySpark", "Airflow", "Kafka / Redpanda", "AWS"];
+
 const About = () => {
   return (
     <div className="about-section" id="about">
       <div className="about-me">
         <h3 className="title">About Me</h3>
-        <p className="para">
-          Results-driven Data Professional with hands-on experience in data analysis, data engineering, and machine learning. Proficient in Python, SQL (PostgreSQL, SQL Server), Power BI, and ETL pipeline development, with exposure to cloud platforms such as AWS. Skilled in dimensional data modeling, MLOps practices, and building end-to-end data analytics workflows that transform raw data into actionable insights. Strong academic performer (CGPA 9.32) with an IEEE-published research paper and Google Data Analytics Professional Certification. Passionate about leveraging data and engineering expertise to develop scalable, data-driven solutions for real-world business problems.
 
+        <p className="para about-lead">
+          I build data pipelines people can <span>trust</span>.
         </p>
+
+        <p className="about-body">
+          Computer Science engineer and dual IEEE-published researcher. I design
+          Medallion and ETL/ELT architectures, from daily batch jobs to
+          real-time streaming, and I care about clean models, trustworthy data
+          and dashboards people actually use.
+        </p>
+
+        <ul className="about-stats">
+          {stats.map((s) => (
+            <li key={s.label}>
+              <strong>{s.value}</strong>
+              <span>{s.label}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="about-stack" aria-label="Core stack">
+          {stack.map((t) => (
+            <span key={t}>{t}</span>
+          ))}
+        </div>
       </div>
     </div>
   );

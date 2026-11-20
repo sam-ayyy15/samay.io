@@ -1,14 +1,60 @@
 import * as THREE from "three";
 import gsap from "gsap";
 
+// Timelines created by this module. On resize we kill & rebuild ONLY these,
+// instead of killing every ScrollTrigger on the page (which also wiped the
+// text-reveal triggers and forced a full rebuild).
+let charTimelines: gsap.core.Timeline[] = [];
+let allTimelines: gsap.core.Timeline[] = [];
+let screenLight: any = null;
+let monitor: any = null;
+let materialsFor: THREE.Object3D | null = null;
+
+function killTimelines(list: gsap.core.Timeline[]) {
+  list.forEach((tl) => {
+    tl.scrollTrigger?.kill();
+    tl.progress(0).kill(); // restore start values so the rebuild captures clean "from" states
+  });
+}
+
+// One-time material setup + screen flicker. Previously this ran on every
+// resize, stacking a new setInterval and a new infinite tween each time.
+function setupMaterials(character: THREE.Object3D) {
+  if (materialsFor === character) return;
+  materialsFor = character;
+  character.children.forEach((object: any) => {
+    if (object.name === "Plane004") {
+      object.children.forEach((child: any) => {
+        child.material.transparent = true;
+        child.material.opacity = 0;
+        if (child.material.name === "Material.018") {
+          monitor = child;
+          child.material.color.set("#FFFFFF");
+        }
+      });
+    }
+    if (object.name === "screenlight") {
+      object.material.transparent = true;
+      object.material.opacity = 0;
+      object.material.emissive.set("#FF3A5C");
+      gsap.timeline({ repeat: -1, repeatRefresh: true }).to(object.material, {
+        emissiveIntensity: () => Math.random() * 8,
+        duration: () => Math.random() * 0.6,
+        delay: () => Math.random() * 0.1,
+      });
+      screenLight = object;
+    }
+  });
+}
+
 export function setCharTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
   camera: THREE.PerspectiveCamera
 ) {
-  let intensity: number = 0;
-  setInterval(() => {
-    intensity = Math.random();
-  }, 200);
+  killTimelines(charTimelines);
+  charTimelines = [];
+  if (character) setupMaterials(character);
+
   const tl1 = gsap.timeline({
     scrollTrigger: {
       trigger: ".landing-section",
@@ -36,30 +82,7 @@ export function setCharTimeline(
       invalidateOnRefresh: true,
     },
   });
-  let screenLight: any, monitor: any;
-  character?.children.forEach((object: any) => {
-    if (object.name === "Plane004") {
-      object.children.forEach((child: any) => {
-        child.material.transparent = true;
-        child.material.opacity = 0;
-        if (child.material.name === "Material.018") {
-          monitor = child;
-          child.material.color.set("#FFFFFF");
-        }
-      });
-    }
-    if (object.name === "screenlight") {
-      object.material.transparent = true;
-      object.material.opacity = 0;
-      object.material.emissive.set("#B0F5EA");
-      gsap.timeline({ repeat: -1, repeatRefresh: true }).to(object.material, {
-        emissiveIntensity: () => intensity * 8,
-        duration: () => Math.random() * 0.6,
-        delay: () => Math.random() * 0.1,
-      });
-      screenLight = object;
-    }
-  });
+  charTimelines.push(tl1, tl2, tl3);
   let neckBone = character?.getObjectByName("spine005");
   if (window.innerWidth > 1024) {
     if (character) {
@@ -128,11 +151,13 @@ export function setCharTimeline(
         },
       });
       tM2.to(".what-box-in", { display: "flex", duration: 0.1, delay: 0 }, 0);
+      charTimelines.push(tM2);
     }
   }
 }
 
 export function setAllTimeline() {
+  killTimelines(allTimelines);
   const careerTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: ".career-section",
@@ -142,6 +167,7 @@ export function setAllTimeline() {
       invalidateOnRefresh: true,
     },
   });
+  allTimelines = [careerTimeline];
   careerTimeline
     .fromTo(
       ".career-timeline",

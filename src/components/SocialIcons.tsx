@@ -11,49 +11,80 @@ import HoverLinks from "./HoverLinks";
 
 const SocialIcons = () => {
   useEffect(() => {
-    const social = document.getElementById("social") as HTMLElement;
+    const social = document.getElementById("social");
+    if (!social || !window.matchMedia("(hover: hover)").matches) return;
 
-    social.querySelectorAll("span").forEach((item) => {
-      const elem = item as HTMLElement;
+    // One shared listener + one rAF loop that sleeps when idle.
+    // (Previously: 4 never-ending rAF loops and listeners that were never removed.)
+    const items = Array.from(social.querySelectorAll("span")).map((elem) => {
       const link = elem.querySelector("a") as HTMLElement;
-
-      const rect = elem.getBoundingClientRect();
-      let mouseX = rect.width / 2;
-      let mouseY = rect.height / 2;
-      let currentX = 0;
-      let currentY = 0;
-
-      const updatePosition = () => {
-        currentX += (mouseX - currentX) * 0.1;
-        currentY += (mouseY - currentY) * 0.1;
-
-        link.style.setProperty("--siLeft", `${currentX}px`);
-        link.style.setProperty("--siTop", `${currentY}px`);
-
-        requestAnimationFrame(updatePosition);
-      };
-
-      const onMouseMove = (e: MouseEvent) => {
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        if (x < 40 && x > 10 && y < 40 && y > 5) {
-          mouseX = x;
-          mouseY = y;
-        } else {
-          mouseX = rect.width / 2;
-          mouseY = rect.height / 2;
-        }
-      };
-
-      document.addEventListener("mousemove", onMouseMove);
-
-      updatePosition();
-
-      return () => {
-        elem.removeEventListener("mousemove", onMouseMove);
+      return {
+        elem,
+        link,
+        rect: elem.getBoundingClientRect(),
+        mouseX: 0,
+        mouseY: 0,
+        currentX: 0,
+        currentY: 0,
       };
     });
+    const center = (it: (typeof items)[number]) => {
+      it.mouseX = it.rect.width / 2;
+      it.mouseY = it.rect.height / 2;
+    };
+    items.forEach((it) => {
+      center(it);
+      it.currentX = it.mouseX;
+      it.currentY = it.mouseY;
+    });
+
+    let rafId = 0;
+    let running = false;
+    const tick = () => {
+      let moving = false;
+      items.forEach((it) => {
+        const dx = it.mouseX - it.currentX;
+        const dy = it.mouseY - it.currentY;
+        if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) moving = true;
+        it.currentX += dx * 0.1;
+        it.currentY += dy * 0.1;
+        it.link.style.setProperty("--siLeft", `${it.currentX}px`);
+        it.link.style.setProperty("--siTop", `${it.currentY}px`);
+      });
+      if (moving) rafId = requestAnimationFrame(tick);
+      else running = false;
+    };
+    const start = () => {
+      if (!running) {
+        running = true;
+        rafId = requestAnimationFrame(tick);
+      }
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      items.forEach((it) => {
+        const x = e.clientX - it.rect.left;
+        const y = e.clientY - it.rect.top;
+        if (x < 40 && x > 10 && y < 40 && y > 5) {
+          it.mouseX = x;
+          it.mouseY = y;
+        } else {
+          center(it);
+        }
+      });
+      start();
+    };
+    const onResize = () => {
+      items.forEach((it) => (it.rect = it.elem.getBoundingClientRect()));
+    };
+
+    document.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   return (

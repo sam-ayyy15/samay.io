@@ -25,9 +25,9 @@
 }
 .header ul li {
   margin-left: 0px;
-  letter-spacing: 1px;
-  color: #ccc;
-  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--textColor);
+  font-weight: 700;
   cursor: pointer;
 }
 .navbar-connect {
@@ -37,11 +37,14 @@
   top: 50%;
   transform: translate(-50%, -50%);
   font-size: 15px;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   font-weight: 500;
+  color: var(--mutedColor);
 }
 .navbar-title {
-  font-weight: 700;
+  font-family: var(--fontDisplay);
+  font-weight: 800;
+  color: var(--accentColor);
   font-size: 14px;
   letter-spacing: 0.2px;
 }
@@ -55,7 +58,7 @@
     font-size: 14px;
   }
   .header ul li {
-    color: #eae5ec;
+    color: var(--textColor);
   }
   .navbar-title {
     font-size: 16px;
@@ -79,5 +82,12 @@
   }
   .navbar-title {
     font-size: 18px;
+  }
+}
+
+/* keep the mobile nav to 3 items so it doesn't collide with headings */
+@media only screen and (max-width: 499px) {
+  .header ul .nav-optional {
+    display: none;
   }
 }

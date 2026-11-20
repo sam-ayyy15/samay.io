@@ -10,26 +10,30 @@ const Loading = ({ percent }: { percent: number }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [clicked, setClicked] = useState(false);
 
-  if (percent >= 100) {
-    setTimeout(() => {
+  // Was scheduled directly in the render body, so every re-render after 100%
+  // queued another pair of timers.
+  const isDone = percent >= 100;
+  useEffect(() => {
+    if (!isDone) return;
+    let t2: number | undefined;
+    const t1 = window.setTimeout(() => {
       setLoaded(true);
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 1000);
-    }, 600);
-  }
+      t2 = window.setTimeout(() => setIsLoaded(true), 450);
+    }, 120);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [isDone]);
 
   useEffect(() => {
+    if (!isLoaded) return;
     import("./utils/initialFX").then((module) => {
-      if (isLoaded) {
-        setClicked(true);
-        setTimeout(() => {
-          if (module.initialFX) {
-            module.initialFX();
-          }
-          setIsLoading(false);
-        }, 900);
-      }
+      setClicked(true);
+      setTimeout(() => {
+        module.initialFX?.();
+        setIsLoading(false);
+      }, 700);
     });
   }, [isLoaded]);
 
@@ -46,7 +50,7 @@ const Loading = ({ percent }: { percent: number }) => {
     <>
       <div className="loading-header">
         <a href="/#" className="loader-title" data-cursor="disable">
-          SS
+          SS.
         </a>
         <div className={`loaderGame ${clicked && "loader-out"}`}>
           <div className="loaderGame-container">
@@ -66,6 +70,10 @@ const Loading = ({ percent }: { percent: number }) => {
             <span> Data Engineer</span> <span>Data Analyst</span>
           </Marquee>
         </div>
+        <div
+          className="loading-progress"
+          style={{ transform: `scaleX(${percent / 100})` }}
+        />
         <div
           className={`loading-wrap ${clicked && "loading-clicked"}`}
           onMouseMove={(e) => handleMouseMove(e)}
@@ -93,43 +101,43 @@ const Loading = ({ percent }: { percent: number }) => {
 export default Loading;
 
 export const setProgress = (setLoading: (value: number) => void) => {
-  let percent: number = 0;
+  let percent = 0;
+  let real = 0;
 
-  let interval = setInterval(() => {
-    if (percent <= 50) {
-      let rand = Math.round(Math.random() * 5);
-      percent = percent + rand;
-      setLoading(percent);
-    } else {
-      clearInterval(interval);
-      interval = setInterval(() => {
-        percent = percent + Math.round(Math.random());
-        setLoading(percent);
-        if (percent > 91) {
-          clearInterval(interval);
-        }
-      }, 2000);
+  // Ease the visible number toward the REAL download progress (0-90%).
+  // Before this, the bar faked its way to ~91% and then sat there for seconds.
+  let interval = window.setInterval(() => {
+    const target = Math.max(real * 90, Math.min(percent + 1, 30));
+    if (percent < target) {
+      percent = Math.min(
+        target,
+        percent + Math.max(1, Math.round((target - percent) * 0.3))
+      );
+      setLoading(Math.round(percent));
     }
-  }, 100);
+  }, 50);
+
+  function report(fraction: number) {
+    real = fraction;
+  }
 
   function clear() {
-    clearInterval(interval);
+    window.clearInterval(interval);
     setLoading(100);
   }
 
   function loaded() {
     return new Promise<number>((resolve) => {
-      clearInterval(interval);
-      interval = setInterval(() => {
-        if (percent < 100) {
-          percent++;
-          setLoading(percent);
-        } else {
+      window.clearInterval(interval);
+      interval = window.setInterval(() => {
+        percent = Math.min(100, Math.round(percent) + 5);
+        setLoading(percent);
+        if (percent >= 100) {
+          window.clearInterval(interval);
           resolve(percent);
-          clearInterval(interval);
         }
-      }, 2);
+      }, 16);
     });
   }
-  return { loaded, percent, clear };
+  return { loaded, percent, clear, report };
 };

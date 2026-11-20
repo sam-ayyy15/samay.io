@@ -1,0 +1,215 @@
+.impact-section {
+  position: relative;
+  z-index: 2;
+  background: var(--noirColor);
+  color: var(--onNoir);
+  padding: 0 0 120px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* soft cherry light leaking in from the corner — a static gradient, zero runtime cost */
+.impact-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 60% at 100% 0%, rgba(210, 4, 45, 0.35), transparent 70%),
+    radial-gradient(50% 50% at 0% 100%, rgba(140, 11, 38, 0.35), transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── Marquee ── */
+.impact-marquee {
+  padding: 26px 0;
+  border-bottom: 1px solid rgba(247, 238, 240, 0.12);
+  background: var(--accentColor);
+  transform: rotate(-1.5deg) scale(1.04);
+  margin: 40px 0 100px;
+}
+
+.impact-marquee-row {
+  display: flex;
+  width: max-content;
+  animation: impactMarquee 38s linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.impact-marquee-row.is-reverse {
+  animation-direction: reverse;
+  animation-duration: 44s;
+  opacity: 0.55;
+}
+
+.is-inview .impact-marquee-row {
+  animation-play-state: running;
+}
+
+.impact-marquee-track {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.impact-marquee-track span {
+  font-family: var(--fontDisplay);
+  font-weight: 800;
+  font-size: clamp(26px, 3.4vw, 54px);
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  color: #fff;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.impact-marquee-track span::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  margin-left: 56px;
+  border-radius: 50%;
+  background: var(--noirColor);
+}
+
+@keyframes impactMarquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Heading ── */
+.impact-container {
+  margin: auto;
+}
+
+.impact-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accentBright);
+  margin-bottom: 14px;
+}
+
+.impact-head h2 {
+  font-size: clamp(44px, 6vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -2px;
+  margin: 0 0 60px;
+  font-weight: 800;
+}
+
+.impact-head h2 span {
+  color: var(--accentBright);
+}
+
+/* ── Grid ── */
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(247, 238, 240, 0.14);
+  border-left: 1px solid rgba(247, 238, 240, 0.14);
+}
+
+.impact-card {
+  position: relative;
+  padding: 36px 32px 34px;
+  border-right: 1px solid rgba(247, 238, 240, 0.14);
+  border-bottom: 1px solid rgba(247, 238, 240, 0.14);
+  overflow: hidden;
+}
+
+/* cherry wash slides up on hover — transform only */
+.impact-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, var(--accentColor), var(--accentDeep));
+  transform: translateY(101%);
+  transition: transform 0.5s var(--easeOut);
+  z-index: -1;
+}
+
+.impact-card {
+  isolation: isolate;
+}
+
+@media (hover: hover) {
+  .impact-card:hover::before {
+    transform: translateY(0);
+  }
+}
+
+.impact-value {
+  font-family: var(--fontDisplay);
+  font-weight: 800;
+  font-size: clamp(46px, 4.6vw, 74px);
+  line-height: 1;
+  letter-spacing: -2px;
+  display: flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+.impact-affix {
+  color: var(--accentBright);
+  transition: color 0.3s;
+}
+
+.impact-card:hover .impact-affix {
+  color: #fff;
+}
+
+.impact-card h4 {
+  margin: 18px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.impact-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(247, 238, 240, 0.68);
+  transition: color 0.3s;
+}
+
+.impact-card:hover p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media only screen and (max-width: 1024px) {
+  .impact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .impact-section {
+    padding-bottom: 70px;
+  }
+
+  .impact-marquee {
+    margin: 20px 0 60px;
+    padding: 16px 0;
+  }
+
+  .impact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .impact-card {
+    padding: 26px 22px;
+  }
+
+  .impact-container {
+    width: calc(100% - 30px);
+  }
+}

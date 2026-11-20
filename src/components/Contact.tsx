@@ -1,56 +1,62 @@
 import { MdArrowOutward, MdCopyright } from "react-icons/md";
+import { HiOutlineMapPin } from "react-icons/hi2";
 import "./styles/Contact.css";
+
+const socials = [
+  { name: "Github", href: "https://github.com/Sam-ayyy15" },
+  { name: "Linkedin", href: "https://www.linkedin.com/in/samayshetty" },
+  { name: "Twitter", href: "https://x.com/samay_x15" },
+  { name: "Instagram", href: "https://www.instagram.com/sam.ayyy15" },
+];
 
 const Contact = () => {
   return (
     <div className="contact-section section-container" id="contact">
       <div className="contact-container">
-        <h3>Contact</h3>
-        <div className="contact-flex">
+        <div className="contact-cta" data-reveal>
+          <span className="contact-status">
+            <i aria-hidden="true" /> Open to entry-level Data Engineer roles
+          </span>
+          <h3>
+            Let’s build data
+            <br />
+            that <span>moves.</span>
+          </h3>
+          <a
+            className="contact-mail"
+            href="mailto:samayshetty1234@gmail.com"
+            data-cursor="disable"
+          >
+            samayshetty1234@gmail.com <MdArrowOutward />
+          </a>
+        </div>
+        <div className="contact-flex" data-reveal>
           <div className="contact-box">
-            <h4>Email</h4>
+            <h4>Phone</h4>
             <p>
-              <a href="mailto:samayshetty1234@gmail.com" data-cursor="disable">
-                samayshetty1234@gmail.com
+              <a href="tel:+919987120987" data-cursor="disable">
+                +91 99871 20987
               </a>
             </p>
-            <h4>Phone Number</h4>
-            <p>+91 9987120987</p>
+            <h4>Based in</h4>
+            <p className="contact-location">
+              <HiOutlineMapPin /> Mumbai, India
+            </p>
           </div>
           <div className="contact-box">
             <h4>Social</h4>
-            <a
-              href="https://github.com/Sam-ayyy15"
-              target="_blank"
-              data-cursor="disable"
-              className="contact-social"
-            >
-              Github <MdArrowOutward />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/samayshetty"
-              target="_blank"
-              data-cursor="disable"
-              className="contact-social"
-            >
-              Linkedin <MdArrowOutward />
-            </a>
-            <a
-              href="https://x.com/samay_x15"
-              target="_blank"
-              data-cursor="disable"
-              className="contact-social"
-            >
-              Twitter <MdArrowOutward />
-            </a>
-            <a
-              href="https://www.instagram.com/sam.ayyy15"
-              target="_blank"
-              data-cursor="disable"
-              className="contact-social"
-            >
-              Instagram <MdArrowOutward />
-            </a>
+            {socials.map((s) => (
+              <a
+                key={s.name}
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                data-cursor="disable"
+                className="contact-social"
+              >
+                {s.name} <MdArrowOutward />
+              </a>
+            ))}
           </div>
           <div className="contact-box">
             <h2>

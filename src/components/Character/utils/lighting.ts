@@ -1,33 +1,30 @@
 import * as THREE from "three";
-import { RGBELoader } from "three-stdlib";
+import { loadEnvMap } from "../../utils/envMap";
 import { gsap } from "gsap";
 
 const setLighting = (scene: THREE.Scene) => {
-  const directionalLight = new THREE.DirectionalLight(0x5eead4, 0);
+  // Red rim/key light to match the red & white theme
+  const directionalLight = new THREE.DirectionalLight(0xff2d55, 0);
   directionalLight.intensity = 0;
   directionalLight.position.set(-0.47, -0.32, -1);
-  directionalLight.castShadow = true;
-  directionalLight.shadow.mapSize.width = 1024;
-  directionalLight.shadow.mapSize.height = 1024;
-  directionalLight.shadow.camera.near = 0.5;
-  directionalLight.shadow.camera.far = 50;
+  // (shadow maps are never enabled on this renderer, so shadow setup was dead weight)
   scene.add(directionalLight);
 
-  const pointLight = new THREE.PointLight(0x22d3ee, 0, 100, 3);
+  const pointLight = new THREE.PointLight(0xff3a5c, 0, 100, 3);
   pointLight.position.set(3, 12, 4);
-  pointLight.castShadow = true;
   scene.add(pointLight);
 
-  new RGBELoader()
-    .setPath("/models/")
-    .load("char_enviorment.hdr?v=2", function (texture) {
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      scene.environment = texture;
-      scene.environmentIntensity = 0;
-      scene.environmentRotation.set(5.76, 85.85, 1);
-    });
+  // Resolves once the environment map is in place, so shaders can be
+  // pre-compiled with it (adding it later forces a recompile on first use).
+  const envReady = loadEnvMap().then((texture) => {
+    if (!texture) return;
+    scene.environment = texture;
+    scene.environmentIntensity = 0;
+    scene.environmentRotation.set(5.76, 85.85, 1);
+  });
 
   function setPointLight(screenLight: any) {
+    if (!screenLight) return;
     if (screenLight.material.opacity > 0.9) {
       pointLight.intensity = screenLight.material.emissiveIntensity * 20;
     } else {
@@ -55,7 +52,7 @@ const setLighting = (scene: THREE.Scene) => {
     });
   }
 
-  return { setPointLight, turnOnLights };
+  return { setPointLight, turnOnLights, envReady };
 };
 
 export default setLighting;
